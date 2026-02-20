@@ -2,101 +2,115 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <title>iBaan Electric Corporation - Customer Service Portal</title>
-     @vite('resources/css/style.css')
-
-
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    @vite('resources/css/app.css')
 </head>
 <body>
-    <!-- Header -->
+
+    <!-- HEADER -->
     <header class="header">
         <div class="header-content">
-            <div class="logo-section">
+             <div class="logo-section">
                 <img src="/images/rb.png" alt="Logo" class="logo-img">
                 <div class="company-info">
                     <h1>iBaan Electric Corporation</h1>
                     <p>Serving the Community Since 1947</p>
                 </div>
             </div>
-            <nav>
-                <ul class="nav-links">
-                    <li><a href="#services">Services</a></li>
-                </ul>
-            </nav>
+            
         </div>
     </header>
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="container">
+    <!-- MAIN -->
+    <main class="container">
+
+        <!-- HERO -->
+        <section class="hero">
             <h2>Welcome to Our Customer Service Portal</h2>
             <p>Submit your service requests online quickly and easily. Choose from our available services below.</p>
-        </div>
-    </section>
+        </section>
 
-    <!-- Services Section -->
-    <section class="container" id="services">
+        <!-- INFO PILLS -->
+        <div class="info-bar">
+            <div class="info-pill">
+                <span class="dot"></span>
+                Online Services Available 24/7
+            </div>
+            <div class="info-pill">
+                📞 Hotline: (043) 000-0000
+            </div>
+            <div class="info-pill">
+                🕐 Office Hours: Mon–Fri, 8AM–5PM
+            </div>
+        </div>
+
+        <!-- SERVICES -->
+        <div class="section-title">
+            <h3>Our Services</h3>
+            <p>Select the service you need and we'll guide you through the process.</p>
+        </div>
+
         <div class="services-grid">
-            <!-- New Connection -->
-           <div class="service-card" onclick="location.href='{{ route('services.new-connection') }}'">   
+
+            <div class="service-card">
                 <div class="service-icon">⚡</div>
                 <h3>New Connection</h3>
                 <p>Apply for a new electrical connection to your property. Complete all requirements and attend our seminar.</p>
+                <a href="{{ route('services.new-connection') }}" class="card-btn">Apply Now</a>
             </div>
 
-            <!-- Reconnection/Disconnection -->
-            <div class="service-card" onclick="location.href='{{ route('services.reconnection') }}'"> 
+            <div class="service-card">
                 <div class="service-icon">🔌</div>
                 <h3>Reconnection / Disconnection</h3>
                 <p>Request reconnection of your meter or temporary disconnection service.</p>
+                <a href="{{ route('services.reconnection') }}" class="card-btn">Request</a>
             </div>
 
-            <!-- Senior Citizen Discount -->
-             <div class="service-card" onclick="location.href='{{ route('services.senior-citizen') }}'">
+            <div class="service-card">
                 <div class="service-icon">👴</div>
                 <h3>Senior Citizen Discount</h3>
                 <p>Apply for senior citizen electricity discount. Submit your requirements and get approved.</p>
+                <a href="{{ route('services.senior-citizen') }}" class="card-btn">Apply Now</a>
             </div>
 
-            <!-- Change Information -->
-            <div class="service-card" onclick="location.href='{{ route('services.change-info') }}'">
+            <div class="service-card">
                 <div class="service-icon">📝</div>
                 <h3>Change Information</h3>
                 <p>Update your account information, name, address, or contact details.</p>
+                <a href="{{ route('services.change-info') }}" class="card-btn">Update Info</a>
             </div>
 
-            <!-- Change Meter -->
-           <div class="service-card" onclick="location.href='{{ route('services.change-meter') }}'">
+            <div class="service-card">
                 <div class="service-icon">📊</div>
                 <h3>Change Meter</h3>
                 <p>Request meter replacement for defective, burned, or overload meters.</p>
+                <a href="{{ route('services.change-meter') }}" class="card-btn">Request</a>
             </div>
 
-            <!-- Net Metering -->
-             <div class="service-card" onclick="location.href='{{ route('services.net-metering') }}'">
+            <div class="service-card">
                 <div class="service-icon">☀️</div>
                 <h3>Net Metering</h3>
                 <p>Apply for net metering if you have solar panels or renewable energy systems.</p>
+                <a href="{{ route('services.net-metering') }}" class="card-btn">Apply Now</a>
             </div>
 
-            <!-- No Power Complaint -->
-            <div class="service-card" onclick="location.href='{{ route('services.no-power') }}'">
+            <div class="service-card">
                 <div class="service-icon">⚠️</div>
                 <h3>No Power / Outage</h3>
                 <p>Report power outages or electrical issues in your area.</p>
+                <a href="{{ route('services.no-power') }}" class="card-btn">Report Now</a>
             </div>
-        </div>
-    </section>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <p>&copy; <?php echo date('Y'); ?> iBaan Electric Corporation. All rights reserved.</p>
-            <p>Serving the community since 1947</p>
         </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <p>© iBaan Electric Corporation. All rights reserved.</p>
+        <p>Serving the community since 1947</p>
     </footer>
 
-    <script src="js/main.js"></script>
 </body>
 </html>
