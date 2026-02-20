@@ -4,17 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 
 class SeniorCitizenController extends Controller
 {
-    // Show the form
     public function index()
     {
         return view('services.senior-citizen');
     }
 
-    // Handle form submission
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -30,7 +27,7 @@ class SeniorCitizenController extends Controller
         ]);
 
         try {
-            // Insert into service_requests
+            // 1. Insert into service_requests
             $requestId = DB::table('service_requests')->insertGetId([
                 'request_type'   => 'senior_discount',
                 'account_number' => $validated['account_number'],
@@ -43,31 +40,38 @@ class SeniorCitizenController extends Controller
                 'updated_at'     => now(),
             ]);
 
-            // Handle file uploads
-            $uploadPath = "uploads/senior-citizen/{$requestId}/";
-            $brgyClearance  = $request->file('brgy_clearance')?->store($uploadPath, 'public');
-            $seniorId       = $request->file('senior_id')?->store($uploadPath, 'public');
-            $billingReceipt = $request->file('billing_receipt')?->store($uploadPath, 'public');
-            $authorization  = $request->file('authorization')?->store($uploadPath, 'public');
+            // 2. Handle file uploads
+            $uploadPath = "uploads/senior-citizen/{$requestId}";
+            $brgyClearance  = $request->file('brgy_clearance')->store($uploadPath, 'public');
+            $seniorId       = $request->file('senior_id')->store($uploadPath, 'public');
+            $billingReceipt = $request->file('billing_receipt')->store($uploadPath, 'public');
+            $authorization  = $request->hasFile('authorization')
+                                ? $request->file('authorization')->store($uploadPath, 'public')
+                                : null;
 
-            // Insert into senior_discount_requests
+            // 3. Insert into senior_discount_requests with all customer info
             DB::table('senior_discount_requests')->insert([
-                'request_id'          => $requestId,
-                'brgy_clearance'      => $brgyClearance,
-                'senior_id_copy'      => $seniorId,
-                'billing_receipt'     => $billingReceipt,
-                'authorization_letter'=> $authorization,
-                'created_at'          => now(),
-                'updated_at'          => now(),
+                'request_id'           => $requestId,
+                'account_number'       => $validated['account_number'],
+                'customer_name'        => $validated['customer_name'],
+                'contact_number'       => $validated['contact_number'],
+                'email'                => $validated['email'] ?? null,
+                'address'              => $validated['address'],
+                'brgy_clearance'       => $brgyClearance,
+                'senior_id_copy'       => $seniorId,
+                'billing_receipt'      => $billingReceipt,
+                'authorization_letter' => $authorization,
+                'personal_appearance'  => 0,
+                'created_at'           => now(),
             ]);
 
             return redirect()->route('services.senior-citizen')
-                             ->with('success', "Senior citizen discount request submitted! Request ID: #{$requestId}");
+                ->with('success', "Senior citizen discount request submitted! Request ID: #{$requestId}");
 
         } catch (\Exception $e) {
             return redirect()->back()
-                             ->withInput()
-                             ->with('error', 'Error submitting request. Please try again.');
+                ->withInput()
+                ->with('error', 'Submission failed: ' . $e->getMessage());
         }
     }
 }

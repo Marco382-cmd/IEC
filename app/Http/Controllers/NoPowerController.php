@@ -25,6 +25,7 @@ class NoPowerController extends Controller
         ]);
 
         try {
+            // 1. Insert into service_requests
             $requestId = DB::table('service_requests')->insertGetId([
                 'request_type'   => 'no_power',
                 'account_number' => $validated['account_number'],
@@ -37,13 +38,18 @@ class NoPowerController extends Controller
                 'updated_at'     => now(),
             ]);
 
+            // 2. Insert into no_power_requests with all customer info
             DB::table('no_power_requests')->insert([
                 'request_id'        => $requestId,
+                'account_number'    => $validated['account_number'],
+                'customer_name'     => $validated['customer_name'],
+                'contact_number'    => $validated['contact_number'],
+                'email'             => $validated['email'] ?? null,
+                'address'           => $validated['address'],
                 'outage_location'   => $validated['outage_location'],
                 'outage_start_time' => now(),
                 'affected_area'     => $validated['affected_area'],
                 'created_at'        => now(),
-                'updated_at'        => now(),
             ]);
 
             return redirect()->route('services.no-power')
@@ -52,7 +58,7 @@ class NoPowerController extends Controller
         } catch (\Exception $e) {
             return redirect()->back()
                 ->withInput()
-                ->with('error', 'Error submitting report. Please try again.');
+                ->with('error', 'Submission failed: ' . $e->getMessage());
         }
     }
 }

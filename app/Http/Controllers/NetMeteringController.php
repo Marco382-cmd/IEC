@@ -26,6 +26,7 @@ class NetMeteringController extends Controller
         ]);
 
         try {
+            // 1. Insert into service_requests
             $requestId = DB::table('service_requests')->insertGetId([
                 'request_type'   => 'net_metering',
                 'account_number' => $validated['account_number'],
@@ -38,28 +39,34 @@ class NetMeteringController extends Controller
                 'updated_at'     => now(),
             ]);
 
+            // 2. Handle file upload
             $docsPath = null;
             if ($request->hasFile('documents')) {
                 $docsPath = $request->file('documents')
                     ->store("uploads/net-metering/{$requestId}", 'public');
             }
 
+            // 3. Insert into net_metering_requests with all customer info
             DB::table('net_metering_requests')->insert([
-                'request_id'            => $requestId,
-                'system_capacity'       => $validated['system_capacity'],
-                'installation_details'  => $validated['installation_details'],
-                'supporting_documents'  => $docsPath,
-                'created_at'            => now(),
-                'updated_at'            => now(),
+                'request_id'           => $requestId,
+                'account_number'       => $validated['account_number'],
+                'customer_name'        => $validated['customer_name'],
+                'contact_number'       => $validated['contact_number'],
+                'email'                => $validated['email'] ?? null,
+                'address'              => $validated['address'],
+                'system_capacity'      => $validated['system_capacity'],
+                'installation_details' => $validated['installation_details'],
+                'supporting_documents' => $docsPath,
+                'created_at'           => now(),
             ]);
 
             return redirect()->route('services.net-metering')
-                ->with('success', "Net metering request submitted! Request ID: #{$requestId}");
+                ->with('success', "Net metering application submitted! Request ID: #{$requestId}");
 
         } catch (\Exception $e) {
             return redirect()->back()
                 ->withInput()
-                ->with('error', 'Error submitting request. Please try again.');
+                ->with('error', 'Submission failed: ' . $e->getMessage());
         }
     }
 }

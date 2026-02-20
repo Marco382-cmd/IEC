@@ -15,10 +15,20 @@
         </div>
     @endif
 
+    @if($errors->any())
+        <div class="alert alert-error">
+            <ul style="margin: 0; padding-left: 1.2rem;">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <div class="form-container">
 
-    <a href="{{ route('welcome') }}" class="btn btn-secondary" style="margin-bottom: 1rem;">← Back</a>
-    
+        <a href="{{ route('welcome') }}" class="btn btn-secondary" style="margin-bottom: 1rem;">← Back</a>
+
         <div class="form-header">
             <h2>Senior Citizen Discount Application</h2>
             <p>Apply for your senior citizen electricity discount</p>
@@ -54,7 +64,7 @@
             </div>
 
             <div class="form-group">
-                <label>Email</label>
+                <label>Email Address</label>
                 <input type="email" name="email" class="form-control" value="{{ old('email') }}">
             </div>
 
@@ -67,19 +77,35 @@
 
             @php
                 $files = [
-                    'brgy_clearance' => 'Barangay Clearance',
-                    'senior_id' => 'Senior Citizen ID',
+                    'brgy_clearance'  => 'Barangay Clearance',
+                    'senior_id'       => 'Senior Citizen ID',
                     'billing_receipt' => 'Billing Receipt',
-                    'authorization' => 'Authorization Letter (if disabled)'
+                    'authorization'   => 'Authorization Letter (if disabled)',
                 ];
             @endphp
 
             @foreach($files as $field => $label)
                 <div class="form-group">
-                    <label>{{ $label }} @if($field !== 'authorization') <span class="required">*</span> @endif</label>
-                    <input type="file" name="{{ $field }}" class="form-control" @if($field !== 'authorization') required @endif>
+                    <label>
+                        {{ $label }}
+                        @if($field !== 'authorization')
+                            <span class="required">*</span>
+                        @endif
+                    </label>
+                    <input
+                        type="file"
+                        name="{{ $field }}"
+                        class="form-control"
+                        accept=".pdf,.jpg,.jpeg,.png"
+                        @if($field !== 'authorization') required @endif
+                    >
+                    <small class="text-muted">PDF, JPG, PNG (Max 5MB)</small>
                 </div>
             @endforeach
+
+            <div class="alert alert-info" style="margin-top: 2rem;">
+                <strong>ℹ</strong> Note: Personal appearance may be required for verification.
+            </div>
 
             <button type="submit" class="btn btn-primary btn-block">Submit Application</button>
         </form>

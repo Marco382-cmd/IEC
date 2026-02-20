@@ -14,6 +14,16 @@
         </div>
     @endif
 
+    @if($errors->any())
+        <div class="alert alert-error">
+            <ul style="margin: 0; padding-left: 1.2rem;">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <div class="form-container">
         <a href="{{ route('welcome') }}" class="btn btn-secondary" style="margin-bottom: 1rem;">← Back</a>
 

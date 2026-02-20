@@ -1,5 +1,4 @@
 <?php
-// app/Http/Controllers/ReconnectionController.php
 
 namespace App\Http\Controllers;
 
@@ -25,7 +24,7 @@ class ReconnectionController extends Controller
         ]);
 
         try {
-            // Insert into service_requests
+            // 1. Insert into service_requests
             $requestId = DB::table('service_requests')->insertGetId([
                 'request_type'   => 'reconnection',
                 'account_number' => $validated['account_number'],
@@ -38,19 +37,27 @@ class ReconnectionController extends Controller
                 'updated_at'     => now(),
             ]);
 
-            // Handle file upload
+            // 2. Handle file upload
             $receiptPath = null;
             if ($request->hasFile('payment_receipt')) {
                 $receiptPath = $request->file('payment_receipt')
                     ->store("uploads/reconnection/{$requestId}", 'public');
             }
 
-            // Insert into reconnection_requests
+            // 3. Insert into reconnection_requests with all customer info
             DB::table('reconnection_requests')->insert([
-                'request_id'      => $requestId,
-                'payment_receipt' => $receiptPath,
-                'created_at'      => now(),
-                'updated_at'      => now(),
+                'request_id'            => $requestId,
+                'account_number'        => $validated['account_number'],
+                'customer_name'         => $validated['customer_name'],
+                'contact_number'        => $validated['contact_number'],
+                'email'                 => $validated['email'] ?? null,
+                'address'               => $validated['address'],
+                'seminar_attended'      => 0,
+                'seminar_date'          => null,
+                'bills_paid'            => 0,
+                'payment_receipt'       => $receiptPath,
+                'reconnection_fee_paid' => 0,
+                'created_at'            => now(),
             ]);
 
             return redirect()->route('services.reconnection')
@@ -59,7 +66,7 @@ class ReconnectionController extends Controller
         } catch (\Exception $e) {
             return redirect()->back()
                 ->withInput()
-                ->with('error', 'Error submitting request. Please try again.');
+                ->with('error', 'Submission failed: ' . $e->getMessage());
         }
     }
 }
